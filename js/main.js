@@ -4,7 +4,37 @@ require.config({
     }
 });
 
-require(["jquery"], function ($) {
+define("taskData", [], function() {
+    "use strict";
+
+    /* load and save data */
+
+    var STORE_NAME = "tasks";
+
+    function saveTaskData (tasks) {
+        localStorage.setItem(STORE_NAME, JSON.stringify(tasks));
+    }
+
+    function loadTaskData () {
+        var storedTasks = localStorage.getItem(STORE_NAME);
+        if(storedTasks) {
+            return JSON.parse(storedTasks);
+        }
+        return [];
+    }
+
+    function clearTaskData () {
+        localStorage.removeItem(STORE_NAME);
+    }
+
+    return {
+        save: saveTaskData,
+        load: loadTaskData,
+        clear: clearTaskData
+    };
+});
+
+require(["jquery", "taskData"], function ($, taskData) {
 
     /* create DOM task elements */
 
@@ -32,26 +62,6 @@ require(["jquery"], function ($) {
         return $task;
     }
 
-    /* load and save data */
-
-    var STORE_NAME = "tasks";
-
-    function saveTaskData (tasks) {
-        localStorage.setItem(STORE_NAME, JSON.stringify(tasks));
-    }
-
-    function loadTaskData () {
-        var storedTasks = localStorage.getItem(STORE_NAME);
-        if(storedTasks) {
-            return JSON.parse(storedTasks);
-        }
-        return [];
-    }
-
-    function clearTaskData () {
-        localStorage.removeItem(STORE_NAME);
-    }
-
     /* task management */
 
     function add() {
@@ -64,7 +74,7 @@ require(["jquery"], function ($) {
     }
 
     function clear() {
-        clearTaskData();
+        taskData.clear();
         render();
     }
 
@@ -78,7 +88,7 @@ require(["jquery"], function ($) {
             });
         });
 
-        saveTaskData(tasks);
+        taskData.save(tasks);
     }
 
     function cancel() {
@@ -86,7 +96,7 @@ require(["jquery"], function ($) {
     }
 
     function render() {
-        renderTasks(loadTaskData());
+        renderTasks(taskData.load());
     }
 
     /* register event handlers */
