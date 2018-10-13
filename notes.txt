@@ -1,4 +1,7 @@
 Module 4
 Build environment and running r.js
-build command
+build commands
+Without optimization
 node build\r.js -o name=main baseUrl=src/js mainConfigFile=src/js/main.js out=src/js/main-optimized.min.js optimize=none
+With optimization
+node build\r.js -o name=main baseUrl=src/js mainConfigFile=src/js/main.js out=src/js/main-optimized.min.js 
